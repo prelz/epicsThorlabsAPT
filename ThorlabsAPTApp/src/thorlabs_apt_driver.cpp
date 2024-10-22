@@ -82,6 +82,9 @@ ThorlabsAPTDriver::ThorlabsAPTDriver(const char *portName, const char *serialPor
     asynInterface *pasynInterface;
     struct ioPvt *pioPvt;
     
+    if (nCh > MAX_CHANNELS) nCh = MAX_CHANNELS - 1;
+    if (nCh <= 0) nCh = 1;
+
     pioPvt = (struct ioPvt *) callocMustSucceed(1, sizeof(struct ioPvt), "ThorlabsAPT");
     asynUserSerial = pasynManager->createAsynUser(0, 0);
     asynUserSerial->userPvt = pioPvt;
@@ -638,7 +641,7 @@ int ThorlabsAPTConfigure(const char *portName, const char *serialPortName, int n
 
 static const iocshArg initArg0 = { "portName", iocshArgString };
 static const iocshArg initArg1 = { "serialPortName", iocshArgString };
-static const iocshArg initArg2 = { "numChannels", iocshArgString };
+static const iocshArg initArg2 = { "numChannels", iocshArgInt };
 
 static const iocshArg * const initArgs[] = {&initArg0, &initArg1, &initArg2};
 static const iocshFuncDef initFuncDef = { "ThorlabsAPTConfigure", 3, initArgs };

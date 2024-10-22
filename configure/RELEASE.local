@@ -1,0 +1,5 @@
+EPICS_BASE=/opt/epics/base
+SUPPORT=/opt/epics/extensions
+IPAC=
+ASYN=$(SUPPORT)/asyn
+SNCSEQ=$(SUPPORT)/seq

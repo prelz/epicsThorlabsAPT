@@ -159,5 +159,5 @@ record (bo, "$(P)$(R)$(CH=CH1):MoveStop") {
 }
 record (bo, "$(P)$(R)$(CH=CH1):MoveHome") {
     field (DTYP, "asynInt32")
-    field (OUT, "@asyn($(PORT),$(ADDR),$(TIMEOUT))$(CH=CH1)MOVE_HOME")
+    field (OUT, "@asyn($(PORT),$(ADDR),$(TIMEOUT))$(CH=CH1)_MOVE_HOME")
 }

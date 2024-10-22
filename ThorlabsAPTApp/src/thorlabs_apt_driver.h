@@ -25,22 +25,22 @@ class asynUser;
 #define P_ModState_String "MOD_STATE"
 #define P_NumberChannels_String "NUMBER_CHANNELS"
 
-#define P_ChEnabled_String "CH_ENABLED"
-#define P_MinVelocity_String "MIN_VELOCITY"
-#define P_Acceleration_String "ACCELERATION"
-#define P_MaxVelocity_String "MAX_VELOCITY"
-#define P_Backlash_String "BACKLASH"
-#define P_CurrentPosition_String "CURRENT_POSITION"
-#define P_CurrentVelocity_String "CURRENT_VELOCITY"
-#define P_StatusBits_String "STATUS_BITS"
+#define P_ChEnabled_Format "%s_ENABLED"
+#define P_MinVelocity_Format "%s_MIN_VELOCITY"
+#define P_Acceleration_Format "%s_ACCELERATION"
+#define P_MaxVelocity_Format "%s_MAX_VELOCITY"
+#define P_Backlash_Format "%s_BACKLASH"
+#define P_CurrentPosition_Format "%s_CURRENT_POSITION"
+#define P_CurrentVelocity_Format "%s_CURRENT_VELOCITY"
+#define P_StatusBits_Format "%s_STATUS_BITS"
 
-#define P_MoveAbsolute_String "MOVE_ABSOLUTE"
-#define P_MoveStop_String "MOVE_STOP"
-#define P_MoveHome_String "MOVE_HOME"
+#define P_MoveAbsolute_Format "%s_MOVE_ABSOLUTE"
+#define P_MoveStop_Format "%s_MOVE_STOP"
+#define P_MoveHome_Format "%s_MOVE_HOME"
 
 class ThorlabsAPTDriver : public asynPortDriver {
 public:
-    ThorlabsAPTDriver(const char *portName, const char *serialPortName);
+    ThorlabsAPTDriver(const char *portName, const char *serialPortName, int n_channel);
     virtual asynStatus writeInt32(asynUser *pasynUser, epicsInt32 value);
     void pollThread();
 protected:
@@ -55,11 +55,16 @@ protected:
     void processUnsolicitedMessage(unsigned short int messageId, unsigned char *extraData, size_t extraDataLen);
     asynStatus waitForReply(unsigned short int expectedReplyId, char **extraData = 0, size_t *extraDataLen = 0);
     
-    void requestStatusUpdate();
-    asynStatus setVelocityParams();
+    char *formatChString(const char*, int);
+
+    void requestStatusUpdate(int ch);
+    asynStatus setVelocityParams(int ch);
     
     static const unsigned char deviceAddress = 0x50;
+    static const int MAX_CHANNELS = 4;
     
+    int nCh;
+
     int P_NumEvents;
     int P_LastEvent;
     int P_LastEventNotes;
@@ -74,22 +79,27 @@ protected:
     int P_ModState;
     int P_NumberChannels;
 
-    // The following quantities correspond to one motor channel.
-    // For multi-channel support, they should be declared as arrays and handled accordingly.
-    int P_ChEnabled;
-    int P_MinVelocity;
-    int P_Acceleration;
-    int P_MaxVelocity;
-    int P_Backlash;
-    int P_CurrentPosition;
-    int P_CurrentVelocity;
-    int P_StatusBits;
+    // The following quantities are defined for each motor channel.
+
+    int P_ChEnabled[MAX_CHANNELS];
+    int P_MinVelocity[MAX_CHANNELS];
+    int P_Acceleration[MAX_CHANNELS];
+    int P_MaxVelocity[MAX_CHANNELS];
+    int P_Backlash[MAX_CHANNELS];
+    int P_CurrentPosition[MAX_CHANNELS];
+    int P_CurrentVelocity[MAX_CHANNELS];
+    int P_StatusBits[MAX_CHANNELS];
     
-    int P_MoveAbsolute;
-    int P_MoveStop;
-    int P_MoveHome;
+    int P_MoveAbsolute[MAX_CHANNELS];
+    int P_MoveStop[MAX_CHANNELS];
+    int P_MoveHome[MAX_CHANNELS];
 
     asynUser *asynUserSerial;
+
+    char *channelPrefixes[MAX_CHANNELS] = { const_cast<char *>("CH1"),
+                                 const_cast<char *>("CH2"),
+                                 const_cast<char *>("CH3"),
+                                 const_cast<char *>("CH4") };
 };
 
 

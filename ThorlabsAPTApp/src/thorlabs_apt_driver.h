@@ -51,9 +51,9 @@ protected:
     asynStatus sendPacket(unsigned char *dataToSend, size_t sendLen);
     asynStatus sendLongCommand(int chd, unsigned short int commandId, unsigned char *extraData, size_t extraDataLen);
     asynStatus sendShortCommand(int chd, unsigned short int commandId, unsigned char p1 = 0, unsigned char p2 = 0);
-    unsigned short int recvPacket(char **extraData, size_t *extraDataLen);
-    void processUnsolicitedMessage(unsigned short int messageId, unsigned char *extraData, size_t extraDataLen);
-    asynStatus waitForReply(unsigned short int expectedReplyId, char **extraData = 0, size_t *extraDataLen = 0);
+    unsigned short int recvPacket(char **extraData, size_t *extraDataLen, unsigned char *src = NULL);
+    void processUnsolicitedMessage(unsigned short int messageId, unsigned char *extraData, size_t extraDataLen, unsigned char chs);
+    asynStatus waitForReply(int chn, unsigned short int expectedReplyId, char **extraData = 0, size_t *extraDataLen = 0);
     
     char *formatChString(const char*, int);
 

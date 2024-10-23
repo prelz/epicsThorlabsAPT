@@ -108,7 +108,7 @@ ThorlabsAPTDriver::ThorlabsAPTDriver(const char *portName, const char *serialPor
     unsigned char *data;
     size_t dataLen;
     sendShortCommand(0, MGMSG_HW_REQ_INFO);
-    status = waitForReply(MGMSG_HW_GET_INFO, (char **) &data, &dataLen);
+    status = waitForReply(0, MGMSG_HW_GET_INFO, (char **) &data, &dataLen);
     if (status == asynTimeout) {
         pasynManager->unlockPort(asynUserSerial);
         printf("ThorlabsAPT: timeout waiting for message MGMSG_HW_GET_INFO\n");
@@ -194,7 +194,7 @@ ThorlabsAPTDriver::ThorlabsAPTDriver(const char *portName, const char *serialPor
         
         // Get enabled state for current channel
         sendShortCommand(ch+1, MGMSG_MOD_REQ_CHANENABLESTATE, 1, 0);
-        status = waitForReply(MGMSG_MOD_GET_CHANENABLESTATE, (char **) &data, &dataLen);
+        status = waitForReply(ch+1, MGMSG_MOD_GET_CHANENABLESTATE, (char **) &data, &dataLen);
         if (status == asynTimeout) {
             pasynManager->unlockPort(asynUserSerial);
             printf("ThorlabsAPT: timeout waiting for message MGMSG_MOD_GET_CHANENABLESTATE (ch #%d)\n", ch+1);
@@ -217,7 +217,7 @@ ThorlabsAPTDriver::ThorlabsAPTDriver(const char *portName, const char *serialPor
 
         // Get velocity parameters for current channel
         sendShortCommand(ch+1, MGMSG_MOT_REQ_VELPARAMS, 1, 0);
-        status = waitForReply(MGMSG_MOT_GET_VELPARAMS, (char **) &data, &dataLen);
+        status = waitForReply(ch+1, MGMSG_MOT_GET_VELPARAMS, (char **) &data, &dataLen);
         if (status == asynTimeout) {
             pasynManager->unlockPort(asynUserSerial);
             printf("ThorlabsAPT: timeout waiting for message MGMSG_MOT_GET_VELPARAMS (ch #%d)\n", ch+1);
@@ -259,7 +259,7 @@ ThorlabsAPTDriver::ThorlabsAPTDriver(const char *portName, const char *serialPor
         
         // Get destination of last absolute move command for current channel
         sendShortCommand(ch+1, MGMSG_MOT_REQ_MOVEABSPARAMS, 1, 0);
-        status = waitForReply(MGMSG_MOT_GET_MOVEABSPARAMS, (char **) &data, &dataLen);
+        status = waitForReply(ch+1, MGMSG_MOT_GET_MOVEABSPARAMS, (char **) &data, &dataLen);
         if (status == asynTimeout) {
             pasynManager->unlockPort(asynUserSerial);
             printf("ThorlabsAPT: timeout waiting for message MGMSG_MOT_GET_MOVEABSPARAMS (ch #%d)\n", ch+1);
@@ -275,7 +275,7 @@ ThorlabsAPTDriver::ThorlabsAPTDriver(const char *portName, const char *serialPor
     
         // Get general move parameters (backlash) for current channel
         sendShortCommand(ch+1, MGMSG_MOT_REQ_GENMOVEPARAMS, 1, 0);
-        status = waitForReply(MGMSG_MOT_GET_GENMOVEPARAMS, (char **) &data, &dataLen);
+        status = waitForReply(ch+1, MGMSG_MOT_GET_GENMOVEPARAMS, (char **) &data, &dataLen);
         if (status == asynTimeout) {
             pasynManager->unlockPort(asynUserSerial);
             printf("ThorlabsAPT: timeout waiting for message MGMSG_MOT_GET_GENMOVEPARAMS (ch #%d)\n", ch+1);
@@ -373,7 +373,7 @@ asynStatus ThorlabsAPTDriver::sendLongCommand(int chn, unsigned short int comman
     *pMessage++ = extraDataLen >> 8;
 
     // device address
-    if (chn > 0) {
+    if ((nCh > 1) && (chn > 0)) {
         *pMessage++ = extraDataLen == 0 ? (0x20|(chn&0xf))  : (0xa0|(chn&0xf));
     } else {
         *pMessage++ = extraDataLen == 0 ? deviceAddress : (deviceAddress | 0x80);
@@ -397,13 +397,13 @@ asynStatus ThorlabsAPTDriver::sendShortCommand(int chn, unsigned short int comma
     message[2] = p1;
     message[3] = p2;
     message[4] = deviceAddress;
-    if (chn > 0) message[4] = 0x20|(chn&0xf);
+    if ((nCh > 1) && (chn > 0)) message[4] = 0x20|(chn&0xf);
     message[5] = 0x01;
     
     return sendPacket(message, 6);
 }
 
-unsigned short int ThorlabsAPTDriver::recvPacket(char **extraData, size_t *extraDataLen)
+unsigned short int ThorlabsAPTDriver::recvPacket(char **extraData, size_t *extraDataLen, unsigned char *src)
 {
     size_t numBytes = 0, totalBytes = 0;
     struct ioPvt *pioPvt = (struct ioPvt *) asynUserSerial->userPvt;
@@ -430,6 +430,7 @@ unsigned short int ThorlabsAPTDriver::recvPacket(char **extraData, size_t *extra
     
     unsigned short int messageId = message[1] << 8 | message[0];
     
+    if (src != NULL) *src = message[5];
     size_t _extraDataLen = 0;
     char *_extraData = 0;
     if (message[4] & 0x80) {
@@ -464,7 +465,7 @@ unsigned short int ThorlabsAPTDriver::recvPacket(char **extraData, size_t *extra
     return messageId;
 }
 
-void ThorlabsAPTDriver::processUnsolicitedMessage(unsigned short int messageId, unsigned char *extraData, size_t extraDataLen)
+void ThorlabsAPTDriver::processUnsolicitedMessage(unsigned short int messageId, unsigned char *extraData, size_t extraDataLen, unsigned char chs)
 {
     switch (messageId) {
         case MGMSG_HW_RESPONSE: {
@@ -488,7 +489,8 @@ void ThorlabsAPTDriver::processUnsolicitedMessage(unsigned short int messageId, 
             break;
         }
         case MGMSG_MOT_MOVE_HOMED: {
-            int ch = extraData[0] - 1;
+            int ch = 0;
+            if (nCh > 1) ch = (chs & 0xf);
             if ((ch >= 0) && (ch < nCh)) {
                 setIntegerParam(P_MoveAbsolute[ch], 0);
             }
@@ -499,29 +501,31 @@ void ThorlabsAPTDriver::processUnsolicitedMessage(unsigned short int messageId, 
     }
 }
 
-asynStatus ThorlabsAPTDriver::waitForReply(unsigned short int expectedReplyId, char **extraData, size_t *extraDataLen)
+asynStatus ThorlabsAPTDriver::waitForReply(int chn, unsigned short int expectedReplyId, char **extraData, size_t *extraDataLen)
 {
     unsigned short int replyId = 0;
     char *_extraData;
     size_t _extraDataLen;
     int timeoutCounter = 0;
+    unsigned char chs;
 
     for (;;) {
-        replyId = recvPacket(&_extraData, &_extraDataLen);
+        replyId = recvPacket(&_extraData, &_extraDataLen, &chs);
         for (timeoutCounter = 0; (timeoutCounter < 10) && !replyId; ++timeoutCounter) {
             epicsThreadSleep(0.05);
-            replyId = recvPacket(&_extraData, &_extraDataLen);
+            replyId = recvPacket(&_extraData, &_extraDataLen, &chs);
         }
         if (timeoutCounter == 10)
             return asynTimeout;
         
-        if (replyId == expectedReplyId) {
+        if ((replyId == expectedReplyId) &&
+            ((chn == 0) || (chn == (chs&0xf)))) {
             *extraData = _extraData;
             *extraDataLen = _extraDataLen;
             return asynSuccess;
         }
     
-        processUnsolicitedMessage(replyId, (unsigned char *) _extraData, _extraDataLen);
+        processUnsolicitedMessage(replyId, (unsigned char *) _extraData, _extraDataLen, chs);
         free(_extraData);
     }
 }
@@ -535,7 +539,7 @@ void ThorlabsAPTDriver::requestStatusUpdate(int ch=0)
     lock();
     pasynManager->lockPort(asynUserSerial);
     sendShortCommand(ch+1, MGMSG_MOT_REQ_DCSTATUSUPDATE, 1, 0);
-    status = waitForReply(MGMSG_MOT_GET_DCSTATUSUPDATE, (char **) &data, &dataLen);
+    status = waitForReply(ch+1, MGMSG_MOT_GET_DCSTATUSUPDATE, (char **) &data, &dataLen);
     pasynManager->unlockPort(asynUserSerial);
     
     if (status == asynTimeout) {

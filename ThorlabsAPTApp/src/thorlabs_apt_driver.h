@@ -96,10 +96,10 @@ protected:
 
     asynUser *asynUserSerial;
 
-    char *channelPrefixes[MAX_CHANNELS] = { const_cast<char *>("CH1"),
-                                 const_cast<char *>("CH2"),
-                                 const_cast<char *>("CH3"),
-                                 const_cast<char *>("CH4") };
+    char *channelPrefixes[MAX_CHANNELS] = { const_cast<char *>("Ch1"),
+                                 const_cast<char *>("Ch2"),
+                                 const_cast<char *>("Ch3"),
+                                 const_cast<char *>("Ch4") };
 };
 
 

@@ -147,7 +147,7 @@
   </widget>
   <widget type="checkbox" version="2.0.0">
     <name>CheckBox</name>
-    <pv_name>$(P)$(R)CH1:Enabled</pv_name>
+    <pv_name>$(P)$(R)Ch1:Enabled</pv_name>
     <label></label>
     <x>100</x>
     <y>250</y>
@@ -160,7 +160,7 @@
   </widget>
   <widget type="textentry" version="3.0.0">
     <name>Text Entry</name>
-    <pv_name>$(P)$(R)CH1:MinVelocity</pv_name>
+    <pv_name>$(P)$(R)Ch1:MinVelocity</pv_name>
     <x>100</x>
     <y>280</y>
     <width>130</width>
@@ -173,7 +173,7 @@
   </widget>
   <widget type="textentry" version="3.0.0">
     <name>Text Entry_1</name>
-    <pv_name>$(P)$(R)CH1:MaxVelocity</pv_name>
+    <pv_name>$(P)$(R)Ch1:MaxVelocity</pv_name>
     <x>100</x>
     <y>300</y>
     <width>130</width>
@@ -186,7 +186,7 @@
   </widget>
   <widget type="textentry" version="3.0.0">
     <name>Text Entry_3</name>
-    <pv_name>$(P)$(R)CH1:Acceleration</pv_name>
+    <pv_name>$(P)$(R)Ch1:Acceleration</pv_name>
     <x>100</x>
     <y>320</y>
     <width>130</width>
@@ -199,7 +199,7 @@
   </widget>
   <widget type="textentry" version="3.0.0">
     <name>Text Entry_4</name>
-    <pv_name>$(P)$(R)CH1:Backlash</pv_name>
+    <pv_name>$(P)$(R)Ch1:Backlash</pv_name>
     <x>100</x>
     <y>340</y>
     <width>130</width>
@@ -207,7 +207,7 @@
   </widget>
   <widget type="led" version="2.0.0">
     <name>LED</name>
-    <pv_name>$(P)$(R)CH1:StatusForwardLimit</pv_name>
+    <pv_name>$(P)$(R)Ch1:StatusForwardLimit</pv_name>
     <x>260</x>
     <y>280</y>
   </widget>
@@ -221,7 +221,7 @@
   </widget>
   <widget type="led" version="2.0.0">
     <name>LED_1</name>
-    <pv_name>$(P)$(R)CH1:StatusReverseLimit</pv_name>
+    <pv_name>$(P)$(R)Ch1:StatusReverseLimit</pv_name>
     <x>260</x>
     <y>300</y>
   </widget>
@@ -235,7 +235,7 @@
   </widget>
   <widget type="led" version="2.0.0">
     <name>LED_2</name>
-    <pv_name>$(P)$(R)CH1:StatusMovingForward</pv_name>
+    <pv_name>$(P)$(R)Ch1:StatusMovingForward</pv_name>
     <x>260</x>
     <y>320</y>
   </widget>
@@ -249,7 +249,7 @@
   </widget>
   <widget type="led" version="2.0.0">
     <name>LED_3</name>
-    <pv_name>$(P)$(R)CH1:StatusMovingReverse</pv_name>
+    <pv_name>$(P)$(R)Ch1:StatusMovingReverse</pv_name>
     <x>260</x>
     <y>340</y>
   </widget>
@@ -263,7 +263,7 @@
   </widget>
   <widget type="led" version="2.0.0">
     <name>LED_4</name>
-    <pv_name>$(P)$(R)CH1:StatusHoming</pv_name>
+    <pv_name>$(P)$(R)Ch1:StatusHoming</pv_name>
     <x>260</x>
     <y>370</y>
   </widget>
@@ -277,7 +277,7 @@
   </widget>
   <widget type="led" version="2.0.0">
     <name>LED_5</name>
-    <pv_name>$(P)$(R)CH1:StatusHomed</pv_name>
+    <pv_name>$(P)$(R)Ch1:StatusHomed</pv_name>
     <x>260</x>
     <y>390</y>
   </widget>
@@ -291,7 +291,7 @@
   </widget>
   <widget type="led" version="2.0.0">
     <name>LED_6</name>
-    <pv_name>$(P)$(R)CH1:StatusEnabled</pv_name>
+    <pv_name>$(P)$(R)Ch1:StatusEnabled</pv_name>
     <x>260</x>
     <y>250</y>
   </widget>
@@ -310,7 +310,7 @@
   </widget>
   <widget type="textentry" version="3.0.0">
     <name>Text Entry_5</name>
-    <pv_name>$(P)$(R)CH1:MoveAbsolute</pv_name>
+    <pv_name>$(P)$(R)Ch1:MoveAbsolute</pv_name>
     <x>100</x>
     <y>380</y>
     <width>80</width>
@@ -325,7 +325,7 @@
         <description>Write PV</description>
       </action>
     </actions>
-    <pv_name>$(P)$(R)CH1:MoveStop</pv_name>
+    <pv_name>$(P)$(R)Ch1:MoveStop</pv_name>
     <text>Stop</text>
     <x>100</x>
     <y>430</y>
@@ -341,7 +341,7 @@
         <description>Write PV</description>
       </action>
     </actions>
-    <pv_name>$(P)$(R)CH1:MoveHome</pv_name>
+    <pv_name>$(P)$(R)Ch1:MoveHome</pv_name>
     <text>Home</text>
     <x>260</x>
     <y>430</y>
@@ -355,7 +355,7 @@
   </widget>
   <widget type="textupdate" version="2.0.0">
     <name>Text Update_11</name>
-    <pv_name>$(P)$(R)CH1:CurrentPosition</pv_name>
+    <pv_name>$(P)$(R)Ch1:CurrentPosition</pv_name>
     <x>100</x>
     <y>400</y>
     <width>80</width>

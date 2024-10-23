@@ -68,7 +68,7 @@ record (bo, "$(P)$(R)$(CH1=Ch1):Enabled") {
 }
 record (ao, "$(P)$(R)$(CH1=Ch1):MinVelocity") {
     field (DTYP, "asynInt32")
-    field (OUT, "@asyn($(PORT),$(ADDR),$(TIMEOUT)Ch1_MIN_VELOCITY")
+    field (OUT, "@asyn($(PORT),$(ADDR),$(TIMEOUT))Ch1_MIN_VELOCITY")
     field (ASLO, "$(VSCALE)")
     field (EGU, "$(UNIT)/s")
     field (PREC, "3")

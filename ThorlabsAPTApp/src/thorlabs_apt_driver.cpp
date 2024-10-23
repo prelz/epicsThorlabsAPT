@@ -82,7 +82,7 @@ ThorlabsAPTDriver::ThorlabsAPTDriver(const char *portName, const char *serialPor
     asynInterface *pasynInterface;
     struct ioPvt *pioPvt;
     
-    if (nCh > MAX_CHANNELS) nCh = MAX_CHANNELS - 1;
+    if (nCh > MAX_CHANNELS) nCh = MAX_CHANNELS;
     if (nCh <= 0) nCh = 1;
 
     pioPvt = (struct ioPvt *) callocMustSucceed(1, sizeof(struct ioPvt), "ThorlabsAPT");
@@ -163,6 +163,8 @@ ThorlabsAPTDriver::ThorlabsAPTDriver(const char *portName, const char *serialPor
     free(data);
 
     printf("ThorlabsAPT: model %s; fw ver %u.%u.%u; hw ver %u; %u channels\n", modelNumber, data[16], data[15], data[14], hardwareVersion, numberChannels);
+
+    if (nCh > numberChannels) nCh = numberChannels;
 
     for (int ch=0; ch < nCh; ++ch) {
 

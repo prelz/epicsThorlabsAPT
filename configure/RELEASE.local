@@ -2,4 +2,5 @@ EPICS_BASE=/opt/epics/base
 SUPPORT=/opt/epics/extensions
 IPAC=
 ASYN=$(SUPPORT)/asyn
+BUSY=$(SUPPORT)/busy
 SNCSEQ=$(SUPPORT)/seq

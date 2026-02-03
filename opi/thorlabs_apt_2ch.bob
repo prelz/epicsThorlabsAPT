@@ -3,7 +3,6 @@
 <display version="2.0.0">
   <name>Thorlabs APT motor $(P)$(R)</name>
   <macros>
-    <P>TXYMIRIPL01</P>
     <R>:</R>
     <CH1>X</CH1>
     <CH2>Y</CH2>
